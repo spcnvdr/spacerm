@@ -1,0 +1,57 @@
+spacerm(1.2.7); urgency=low;
+  * Added a new option called --dash/-d which replaces spaces with dashes.
+
+  -- Bryan Hawkins <spcnvdrr@protonmail.com> Thu, 01 Feb 2018 11:07:05 -0600
+
+
+spacerm(1.2.6); urgency=low;
+  * Fixed a bug where spacerm would fail silently if the user did not have
+    adequate permissions to access the file.
+  * Changed the layout of the source code to make it more natural to read.
+
+  -- Bryan Hawkins <spcnvdrr@protonmail.com>   Sat, 1 Jan 2018 13:55:39 -0600
+
+spacerm(1.2.5); urgency=low;
+  * Added the --strip option to strip the given characters from the filename
+    in addition to spaces. The file extension is not modified, however file
+    extensions that contain multiple parts may be modified, .e.g. .tar.gz
+    the .tar portion may have characters stripped from it.
+  * Fixed a bug that allowed directories and other file types to be renamed if
+    specified a certain way. This program only renames regular files.
+  * Added a license file making this program licensed under the 3-clause BSD
+    license.
+
+  -- Bryan Hawkins <spcnvdrr@protonmail.com>   Sat, 30 Dec 2017 13:55:39 -0600
+
+spacerm (1.2.4); urgency=low:
+  * Added a new option to simulate what operation/s would be done. No
+    files are actually renamed/copied but the actions that would be performed
+    are printed to standard output.
+
+  -- Bryan Hawkins <spcnvdrr@protonmail.com> Wed, 20 Dec 2017 01:24:36 -0600
+
+spacerm (1.2.3); urgency=low:
+  * Added a function to find the filename in a given path. It's like my own
+    version of the basename function, except it does not modify the
+    argument passed to it.
+  * Added the --underscore/-u option to replace spaces with underscores.
+
+  -- Bryan Hawkins <spcnvdrr@protonmail.com> Tue, 12 Dec 2017 10:33:49 -0600
+
+spacerm (1.2.2); urgency=low:
+  * Fixed a bug in the fixfilename() function that would ignore preceding
+    spaces in a filename when run in the same directory as spacerm.
+    E.g. spacerm ' file 1' -> ' file1'
+
+  -- Bryan Hawkins <spcnvdrr@protonmail.com> Thu, 07 Dec 2017 01:32:51 -0600
+
+spacerm (1.2.1); urgency=low:
+  * Fixed a bug in the fixfilename() function so that spaces are only removed
+    from filenames. The bug removed spaces from the entire path in addition to
+    the file name which caused the rename() or cpfile() functions to fail
+    because of a non-existent path.
+    E.g. user/folder 1/file 1 -> user/folder1/file1
+
+  -- Bryan Hawkins <spcnvdrr@protonmail.com> Thu, 07 Dec 2017 01:05:33 -0600
+
+use the 'date -R' command to make the date string.
