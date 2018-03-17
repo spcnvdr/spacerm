@@ -1,3 +1,4 @@
+# spacerm - The Space Remover
 Spacerm is a simple program to remove spaces and other undesirable
 characters from file names. By default, only spaces are removed from
 the specified files and each file is renamed in place. The --backup 
