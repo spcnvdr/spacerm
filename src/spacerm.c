@@ -3,7 +3,7 @@
  *  characters from one or more filenames. Windows allows spaces in *
  *  file names which makes it annoying to specify those files on    *
  *  the command line. This program will remove the spaces from the  *
- *  * file name basically renaming the file. It would probably be   *
+ *  file name by simply renaming the file. It would probably be     *
  *  easier to make this program as a BASH script, but eh. When      *
  *  using this program, you can specify one or more files on the    *
  *  command line. The backup/-b option will copy the file to a new  *
@@ -12,7 +12,6 @@
  *  to rename the original file. The interactive option will prompt *
  *  the user for a Yes/No answer before each operation is carried   *
  *  out. The other options are self explanatory.                    *
- *  Last Modified: 1 Feb. 2018                                      *
  ********************************************************************/
 #define _POSIX_C_SOURCE 200809L
 #define _SVID_SOURCE
@@ -86,7 +85,6 @@ struct arguments {
 /* Global variables to signal various modes */
 struct arguments cmdargs = {0};
 
-/***** Function declarations/definitions *****/
 
 /** Find the file name in a path
  * @param path The path to the file
