@@ -1,3 +1,11 @@
+spacerm(1.2.8); urgency=low;
+  * Improved the --backup option so that the new file has the
+    original file's permissions.
+  * Cleaned up lits bits of code
+  * Fixed an incorrect comment describing the rmchr() function
+
+  -- Bryan Hawkins <spcnvdrr@protonmail.com> Mon, 19 Mar 2018 13:24:45 -0500
+
 spacerm(1.2.7); urgency=low;
   * Added a new option called --dash/-d which replaces spaces with dashes.
 

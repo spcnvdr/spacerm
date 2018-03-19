@@ -34,12 +34,10 @@
 #define MAXLEN (4096+1)
 #endif
 
-/* File permissions to use for new files */
-#define FILE_MODE (S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH)
 /* Size of buffer to use for I/O operations */
 #define IO_BUFSIZ    (128*1024)
 
-const char *argp_program_version = "spacerm 1.2.6";
+const char *argp_program_version = "spacerm 1.2.8";
 const char *argp_program_bug_address = "<spcnvdrr@protonmail.com>";
 
 /* Program documentation */
@@ -198,9 +196,7 @@ static int instr(char *str, int c){
 
 /** Remove all occurrences of a character from a string
  *  @param str The string to remove characters from
- *  @param c The character to remove from the string
- *  NOTE: This function, in its current form, relies on char
- *  being a single byte.
+ *  @param rm A NUL terminated string of characters to remove from str
  *
  */
 static void rmchr(char *str, char *rm){
@@ -214,7 +210,7 @@ static void rmchr(char *str, char *rm){
 	while(*ptr != '\0'){
 		/* Copy the current char into ptrw */
 		*ptrw = *ptr++;
-		/* Only advance the ptrw pointer if the char we copied was not c */
+		/* Only advance the ptrw pointer if the char we copied was not in rm */
 		ptrw += (!instr(rm, *ptrw));
 	}
 
@@ -245,7 +241,6 @@ static void subchr(char *str, size_t len, char x, char y){
  * @param oldpath The relative or absolute path of the file to fix.
  * @param newpath A char array to store the new file path in.
  * @param len The maximum number of characters that newpath can hold
- * The path may be an absolute or relative path.
  * @returns 0 if successful, -1 upon error.
  * The return value is pointless for now, but may be used in the future
  *
@@ -253,7 +248,6 @@ static void subchr(char *str, size_t len, char x, char y){
 static int fixfilename(const char *oldpath, char *newpath, size_t len){
 	size_t ret;
 	char *ext, *extcpy, *ptr;
-	//char *ptr = newpath;
 
 	/* Copy oldpath into newpath so we don't modify the original path */
 	if((ret = strlcpy(newpath, oldpath, len)) >= len){
@@ -294,16 +288,18 @@ static int fixfilename(const char *oldpath, char *newpath, size_t len){
 				free(extcpy);
 				return(-1);
 			}
+
 			free(extcpy);
+
 		} else {
 			/* There is no extension to worry about, strip away! */
 			rmchr(ptr, cmdargs.strip);
 		}
 	}
 
-	if(cmdargs.underscore == 1){
+	if(cmdargs.underscore){
 		subchr(ptr, strlen(ptr), ' ', '_');
-	} else if(cmdargs.dashes == 1){
+	} else if(cmdargs.dashes){
 		subchr(ptr, strlen(ptr), ' ', '-');
 	} else {
 		rmchr(ptr, " ");
@@ -392,6 +388,23 @@ static error_t parse_opt(int key, char *arg, struct argp_state *state){
   return(0);
 }
 
+/** Get the permissions of a file
+ * @param file The file to get the permissions of
+ * @returns The permissions of the file
+ *
+ */
+static mode_t getfmode(const char *file){
+	struct stat sbuf;
+
+	if(stat(file, &sbuf) < 0){
+		perror("spacerm: stat() error");
+		exit(EXIT_FAILURE);
+	}
+
+	return(sbuf.st_mode);
+
+}
+
 
 /** Copy a file from infile to outfile
  * @param infile The file to read data from
@@ -402,6 +415,7 @@ static error_t parse_opt(int key, char *arg, struct argp_state *state){
 static int cpfile(const char *infile, const char *outfile){
   int infd, outfd;
   ssize_t n;
+  mode_t oldmask, fmode;
 
   /* Allocate our data buffer */
   char *buf = malloc(IO_BUFSIZ * sizeof(char));
@@ -417,12 +431,20 @@ static int cpfile(const char *infile, const char *outfile){
     return(-1);
   }
 
-  if((outfd = open(outfile, O_CREAT | O_WRONLY, FILE_MODE)) < 0){
+  /* Set the umask to 0 and get the permissions of infile */
+  oldmask = umask(0);
+  fmode = getfmode(infile);
+
+  /* Create the new file with the same permissions as infile */
+  if((outfd = open(outfile, O_CREAT | O_WRONLY, fmode)) < 0){
     perror("spacerm: open() error");
     free(buf);
     close(infd);
     return(-1);
   }
+
+  /* restore the processes's umask */
+  umask(oldmask);
 
   /* Announce our intention to read the file sequentially */
   posix_fadvise(infd, 0, 0, POSIX_FADV_SEQUENTIAL);
@@ -441,9 +463,9 @@ static int cpfile(const char *infile, const char *outfile){
   }
 
   /* Clean up our resources */
-  free(buf);
   close(infd);
   close(outfd);
+  free(buf);
 
   return(0);
 
@@ -538,9 +560,7 @@ static int spacerm(char *file){
   char newpath[MAXLEN] = {0};
   int resp, ret = 0;
 
-  /* Check permissions on the file and directory. This
-   * isn't actually necessary as some other function will fail
-   * and print out the error message, but let's fail early. */
+  /* Check permissions on the file and directory. */
   if((ret = checkperm(file)) < 0){
 	  exit(EXIT_FAILURE);
   }
@@ -551,15 +571,15 @@ static int spacerm(char *file){
   if(fixfilename(file, newpath, MAXLEN) < 0)
 	  return(-1);
 
-  if(cmdargs.backup != 0){
-	  if(cmdargs.interactive != 0){
+  if(cmdargs.backup){
+	  if(cmdargs.interactive){
 		  printf("spacerm: copy '%s' to '%s'? (Yes/No): ", file, newpath);
 		  /* If user said no, abort operation */
 		  if((resp = yesno()) == 0)
 			  return(-1);
 	  }
 
-	  if(cmdargs.dryrun != 0){
+	  if(cmdargs.dryrun){
 		  /* Print out what actions we would take and return */
 		  printf("copy file: '%s' -> '%s'\n", file, newpath);
 		  return(0);
@@ -571,11 +591,11 @@ static int spacerm(char *file){
 	  }
 
 	  /* Print some useful information if verbose mode is enabled */
-	  if(cmdargs.verbose != 0){
+	  if(cmdargs.verbose){
 		  printf("copied file: '%s' -> '%s'\n", file, newpath);
 	  }
   } else {
-	  if(cmdargs.interactive != 0){
+	  if(cmdargs.interactive){
 		  printf("spacerm: rename '%s' to '%s'? (Yes/No): ", file, newpath);
 		  /* If user said no, abort operation */
 		  if((resp = yesno()) == 0)
@@ -606,7 +626,10 @@ static int spacerm(char *file){
 static struct argp argp = {options, parse_opt, args_doc, doc};
 
 
-/* TODO: When in -b/--backup mode, keep the original file's permissions
+/*
+ *  Usage: spacerm [-bdinuv?V] [-s CHARS] [--backup] [--dash] [--interactive]
+ *           [--just-print] [--dry-run] [--strip=CHARS] [--underscore]
+ *           [--verbose] [--help] [--usage] [--version] FILE...
  *
  */
 int main(int argc, char *argv[]){
