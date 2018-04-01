@@ -1,18 +1,51 @@
-/********************************************************************
- *  A simple C program to remove spaces and other annoying          *
- *  characters from one or more filenames. Windows allows spaces in *
- *  file names which makes it annoying to specify those files on    *
- *  the command line. This program will remove the spaces from the  *
- *  file name by simply renaming the file. It would probably be     *
- *  easier to make this program as a BASH script, but eh. When      *
- *  using this program, you can specify one or more files on the    *
- *  command line. The backup/-b option will copy the file to a new  *
- *  file whose name does not include spaces. This is called backup  *
- *  because the original file is not modified. The default mode is  *
- *  to rename the original file. The interactive option will prompt *
- *  the user for a Yes/No answer before each operation is carried   *
- *  out. The other options are self explanatory.                    *
- ********************************************************************/
+/*****************************************************************************
+ * Copyright 2018 Bryan Hawkins <spcnvdrr@protonmail.com>                    *
+ *                                                                           *
+ * Redistribution and use in source and binary forms, with or without        *
+ * modification, are permitted provided that the following conditions        *
+ * are met:                                                                  *
+ *                                                                           *
+ * 1. Redistributions of source code must retain the above copyright notice, *
+ * this list of conditions and the following disclaimer.                     *
+ *                                                                           *
+ * 2. Redistributions in binary form must reproduce the above copyright      *
+ * notice, this list of conditions and the following disclaimer in the       *
+ * documentation and/or other materials provided with the distribution.      *
+ *                                                                           *
+ * 3. Neither the name of the copyright holder nor the names of its          *
+ * contributors may be used to endorse or promote products derived from      *
+ * this software without specific prior written permission.                  *
+ *                                                                           *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS       *
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT         *
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR     *
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT      *
+ * HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,    *
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED  *
+ * TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR    *
+ * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF    *
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING      *
+ * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS        *
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.              *
+ *                                                                           *
+ *  The stlcpy and strlcat functions are copyrighted by Todd C. Miller,      *
+ *  <Todd.Miller@courtesan.com>. See the LICENSE file for the full copyright *
+ *  notice regarding their use.                                              *
+ *                                                                           *
+ *  A simple C program to remove spaces and other annoying                   *
+ *  characters from one or more filenames. Windows allows spaces in          *
+ *  file names which makes it annoying to specify those files on             *
+ *  the command line. This program will remove the spaces from the           *
+ *  file name by simply renaming the file. It would probably be              *
+ *  easier to make this program as a BASH script, but eh. When               *
+ *  using this program, you can specify one or more files on the             *
+ *  command line. The backup/-b option will copy the file to a new           *
+ *  file whose name does not include spaces. This is called backup           *
+ *  because the original file is not modified. The default mode is           *
+ *  to rename the original file. The interactive option will prompt          *
+ *  the user for a Yes/No answer before each operation is carried            *
+ *  out. The other options are self explanatory.                             *
+ *****************************************************************************/
 #define _POSIX_C_SOURCE 200809L
 #define _SVID_SOURCE
 #include <stdio.h>
@@ -37,7 +70,7 @@
 /* Size of buffer to use for I/O operations */
 #define IO_BUFSIZ    (128*1024)
 
-const char *argp_program_version = "spacerm 1.2.8";
+const char *argp_program_version = "spacerm 1.2.9";
 const char *argp_program_bug_address = "<spcnvdrr@protonmail.com>";
 
 /* Program documentation */
@@ -114,7 +147,7 @@ static char *getfname(char *path){
  * for the complete copyright notice.
  */
 
-/* Copy string src to buffer dst of size dsize. At most, dsize-1
+/** Copy string src to buffer dst of size dsize. At most, dsize-1
  * chars will be copied. Always NUL terminate (unless dsize == 0).
  * Returns strlen(src); if retval >= dsize, truncation occurred.
  */
@@ -143,7 +176,7 @@ static size_t strlcpy(char* dst, const char *src, size_t dsize){
 }
 
 
-/* Appends src to string dst of size dsize (unlike strncat, dsize is the
+/** Appends src to string dst of size dsize (unlike strncat, dsize is the
  * full size of dst, not space left). At most, dsize-1 characters
  * will be copied. Always NUL terminate (unless dsize <= strlen(dst)).
  * Returns strlen(src) + MIN(dsize, strlen(initial dst)).
@@ -177,7 +210,7 @@ static size_t strlcat(char *dst, const char *src, size_t dsize){
 }
 
 
-/* Check if c occurs in the string str
+/** Check if c occurs in the string str
  * @param str The string to search
  * @param c The character to search for
  * @returns 1 (True) if c occurs in str, else 0 (False)
@@ -194,7 +227,7 @@ static int instr(char *str, int c){
 }
 
 
-/** Remove all occurrences of a character from a string
+/** Remove all occurrences of the characters in rm from a string
  *  @param str The string to remove characters from
  *  @param rm A NUL terminated string of characters to remove from str
  *
@@ -309,7 +342,7 @@ static int fixfilename(const char *oldpath, char *newpath, size_t len){
 }
 
 
-/* Parse a single option with argp
+/** Parse a single option with argp
  * @param key The option, or key, to parse
  * @param arg The argument to the current option, if present
  * @param state The current argp state
@@ -626,7 +659,7 @@ static int spacerm(char *file){
 static struct argp argp = {options, parse_opt, args_doc, doc};
 
 
-/*
+/**
  *  Usage: spacerm [-bdinuv?V] [-s CHARS] [--backup] [--dash] [--interactive]
  *           [--just-print] [--dry-run] [--strip=CHARS] [--underscore]
  *           [--verbose] [--help] [--usage] [--version] FILE...

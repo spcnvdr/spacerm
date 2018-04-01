@@ -1,4 +1,9 @@
-spacerm(1.2.8); urgency=low;
+spacerm (1.2.9); urgency=low;
+  * Improved some comments. 
+  * Added the BSD 3-clause license to the top of the source code file. 
+
+  -- Bryan Hawkins <spcnvdrr@protonmail.com> Sun, 01 Apr 2018 13:35:02 -0500
+spacerm (1.2.8); urgency=low;
   * Improved the --backup option so that the new file has the
     original file's permissions.
   * Cleaned up lits bits of code
@@ -6,20 +11,20 @@ spacerm(1.2.8); urgency=low;
 
   -- Bryan Hawkins <spcnvdrr@protonmail.com> Mon, 19 Mar 2018 13:24:45 -0500
 
-spacerm(1.2.7); urgency=low;
+spacerm (1.2.7); urgency=low;
   * Added a new option called --dash/-d which replaces spaces with dashes.
 
   -- Bryan Hawkins <spcnvdrr@protonmail.com> Thu, 01 Feb 2018 11:07:05 -0600
 
 
-spacerm(1.2.6); urgency=low;
+spacerm (1.2.6); urgency=low;
   * Fixed a bug where spacerm would fail silently if the user did not have
     adequate permissions to access the file.
   * Changed the layout of the source code to make it more natural to read.
 
   -- Bryan Hawkins <spcnvdrr@protonmail.com>   Sat, 1 Jan 2018 13:55:39 -0600
 
-spacerm(1.2.5); urgency=low;
+spacerm (1.2.5); urgency=low;
   * Added the --strip option to strip the given characters from the filename
     in addition to spaces. The file extension is not modified, however file
     extensions that contain multiple parts may be modified, .e.g. .tar.gz
