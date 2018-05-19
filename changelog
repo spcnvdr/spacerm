@@ -1,8 +1,15 @@
+spacerm (1.3.0); urgency=low;
+  * The use of _SVID_SOURCE is deprecated. Changed to _DEFAULT_SOURCE
+    instead.
+
+  -- Bryan Hawkins <spcnvdrr@protonmail.com> Sat, 19 May 2018 14:39:57 -0500
+
 spacerm (1.2.9); urgency=low;
-  * Improved some comments. 
-  * Added the BSD 3-clause license to the top of the source code file. 
+  * Improved some comments.
+  * Added the BSD 3-clause license to the top of the source code file.
 
   -- Bryan Hawkins <spcnvdrr@protonmail.com> Sun, 01 Apr 2018 13:35:02 -0500
+
 spacerm (1.2.8); urgency=low;
   * Improved the --backup option so that the new file has the
     original file's permissions.

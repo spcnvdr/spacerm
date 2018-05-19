@@ -47,7 +47,7 @@
  *  out. The other options are self explanatory.                             *
  *****************************************************************************/
 #define _POSIX_C_SOURCE 200809L
-#define _SVID_SOURCE
+#define _DEFAULT_SOURCE
 #include <stdio.h>
 #include <errno.h>
 #include <stdlib.h>
@@ -70,7 +70,7 @@
 /* Size of buffer to use for I/O operations */
 #define IO_BUFSIZ    (128*1024)
 
-const char *argp_program_version = "spacerm 1.2.9";
+const char *argp_program_version = "spacerm 1.3.0";
 const char *argp_program_bug_address = "<spcnvdrr@protonmail.com>";
 
 /* Program documentation */
