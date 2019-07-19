@@ -75,14 +75,14 @@ const char *argp_program_bug_address = "<spcnvdrr@protonmail.com>";
 
 /* Program documentation */
 static char doc[] = "Remove spaces from FILE name(s)\
-	\vThis program removes spaces from file names by renaming the file.\
-	Optionally, the original file can be left unchanged with the --backup\
-	option. The --backup option copies the file contents to a new file with\
-	spaces removed from the file name. The --interactive option will prompt\
-	the user for approval before each operation is carried out.\n\
-	e.g. \tspacerm 'first file' 'second file' 'third file'\n\
-	\tspacerm -iu 'first file'\n\
-	\tspacerm -b -v '/home/user/file name'";
+ \vThis program removes spaces from file names by renaming the file.\
+ Optionally, the original file can be left unchanged with the --backup\
+ option. The --backup option copies the file contents to a new file with\
+ spaces removed from the file name. The --interactive option will prompt\
+ the user for approval before each operation is carried out.\n\
+ e.g. \tspacerm 'first file' 'second file' 'third file'\n\
+ \tspacerm -iu 'first file'\n\
+ \tspacerm -b -v '/home/user/file name'";
 
 /* A description of the arguments we accept */
 static char args_doc[] = "FILE...";
