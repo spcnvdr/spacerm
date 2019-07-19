@@ -1,3 +1,9 @@
+spacerm (1.3.1); urgency=low;
+  * Fixed formatting errors in the source code.
+  * Updated year in license  
+
+  -- Bryan Hawkins <spcnvdrr@protonmail.com> Fri, 19 Jul 2019 06:27:33 -0500
+
 spacerm (1.3.0); urgency=low;
   * The use of _SVID_SOURCE is deprecated. Changed to _DEFAULT_SOURCE
     instead.

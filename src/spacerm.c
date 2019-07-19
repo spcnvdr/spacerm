@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Copyright 2018 Bryan Hawkins <spcnvdrr@protonmail.com>                    *
+ * Copyright 2019 Bryan Hawkins <spcnvdrr@protonmail.com>                    *
  *                                                                           *
  * Redistribution and use in source and binary forms, with or without        *
  * modification, are permitted provided that the following conditions        *
@@ -70,47 +70,47 @@
 /* Size of buffer to use for I/O operations */
 #define IO_BUFSIZ    (128*1024)
 
-const char *argp_program_version = "spacerm 1.3.0";
+const char *argp_program_version = "spacerm 1.3.1";
 const char *argp_program_bug_address = "<spcnvdrr@protonmail.com>";
 
 /* Program documentation */
 static char doc[] = "Remove spaces from FILE name(s)\
-  \vThis program removes spaces from file names by renaming the file.\
- Optionally, the original file can be left unchanged with the --backup\
- option. The --backup option copies the file contents to a new file with\
- spaces removed from the file name. The --interactive option will prompt\
- the user for approval before each operation is carried out.\n\
- e.g. \tspacerm 'first file' 'second file' 'third file'\n\
- \tspacerm -iu 'first file'\n\
- \tspacerm -b -v '/home/user/file name'";
+	\vThis program removes spaces from file names by renaming the file.\
+	Optionally, the original file can be left unchanged with the --backup\
+	option. The --backup option copies the file contents to a new file with\
+	spaces removed from the file name. The --interactive option will prompt\
+	the user for approval before each operation is carried out.\n\
+	e.g. \tspacerm 'first file' 'second file' 'third file'\n\
+	\tspacerm -iu 'first file'\n\
+	\tspacerm -b -v '/home/user/file name'";
 
 /* A description of the arguments we accept */
 static char args_doc[] = "FILE...";
 
 /* The options we understand */
 static struct argp_option options[] = {
-  {"backup",      'b',  0,    0,  "Leave the original file unchanged", 0},
-  {"dash",        'd',  0,    0,  "Replace spaces with dashes/hyphens", 0},
-  {"interactive", 'i',  0,    0,  "Prompt before renaming or copying file", 0},
-  {"just-print",  'n',  0,    0,  "Print what would be done, but do nothing", 0},
-  {"dry-run",      0,   0,    OPTION_ALIAS, "Alias for just-print", 0},
-  {"strip",       's',  "CHARS", 0, "Remove the given characters from filename", 0},
-  {"underscore",  'u',  0,    0,  "Replace spaces with underscores", 0},
-  {"verbose",     'v',  0,    0,  "Verbosely list files processed", 0},
-  {0}
+	{"backup",      'b',  0,    0,  "Leave the original file unchanged", 0},
+	{"dash",        'd',  0,    0,  "Replace spaces with dashes/hyphens", 0},
+	{"interactive", 'i',  0,    0,  "Prompt before renaming or copying file", 0},
+	{"just-print",  'n',  0,    0,  "Print what would be done, but do nothing", 0},
+	{"dry-run",      0,   0,    OPTION_ALIAS, "Alias for just-print", 0},
+	{"strip",       's',  "CHARS", 0, "Remove the given characters from filename", 0},
+	{"underscore",  'u',  0,    0,  "Replace spaces with underscores", 0},
+	{"verbose",     'v',  0,    0,  "Verbosely list files processed", 0},
+	{0}
 };
 
 /* Used by main to communicate with parse_opt */
 struct arguments {
-  char *arg1;                   /* First mandatory filename */
-  char **strings;               /* Any other filenames to fix */
-  char *strip;					/* A string of chars to remove from filename */
-  int verbose;					/* Set if verbose mode */
-  int backup;					/* Copy to a file with modified file name */
-  int dashes;					/* Replace spaces with dashes */
-  int interactive;				/* Prompt before action */
-  int underscore;				/* Replace spaces with underscores */
-  int dryrun;					/* Print what would happen, but do nothing */
+	char *arg1;                   /* First mandatory filename */
+	char **strings;               /* Any other filenames to fix */
+	char *strip;                  /* A string of chars to remove from filename */
+	int verbose;                  /* Set if verbose mode */
+	int backup;                   /* Copy to a file with modified file name */
+	int dashes;                   /* Replace spaces with dashes */
+	int interactive;              /* Prompt before action */
+	int underscore;               /* Replace spaces with underscores */
+	int dryrun;                   /* Print what would happen, but do nothing */
 };
 
 /* Global variables to signal various modes */
@@ -152,27 +152,27 @@ static char *getfname(char *path){
  * Returns strlen(src); if retval >= dsize, truncation occurred.
  */
 static size_t strlcpy(char* dst, const char *src, size_t dsize){
-    const char *osrc = src;
-    size_t nleft = dsize;
+	const char *osrc = src;
+	size_t nleft = dsize;
 
-    /* Copy as many bytes as will fit */
-    if(nleft != 0){
-        while(--nleft != 0){
-            if((*dst++ = *src++) == '\0')
-                break;
-        }
-    }
+	/* Copy as many bytes as will fit */
+	if(nleft != 0){
+		while(--nleft != 0){
+			if((*dst++ = *src++) == '\0')
+				break;
+		}
+	}
 
-    /* Not enough room in dst, add NUL and traverse rest of src */
-    if(nleft == 0){
-        if(dsize != 0)
-            *dst = '\0';            /* NUL-terminate dst */
-        while(*src++)
-            ;
-    }
+	/* Not enough room in dst, add NUL and traverse rest of src */
+	if(nleft == 0){
+		if(dsize != 0)
+			*dst = '\0';            /* NUL-terminate dst */
+		while(*src++)
+			;
+	}
 
-    /* Count does not include NUL */
-    return(src - osrc - 1);
+	/* Count does not include NUL */
+	return(src - osrc - 1);
 }
 
 
@@ -183,30 +183,30 @@ static size_t strlcpy(char* dst, const char *src, size_t dsize){
  * If retval >= dsize, truncation occured.
  */
 static size_t strlcat(char *dst, const char *src, size_t dsize){
-    const char *odst = dst;
-    const char *osrc = src;
-    size_t n = dsize;
-    size_t dlen;
+	const char *odst = dst;
+	const char *osrc = src;
+	size_t n = dsize;
+	size_t dlen;
 
-    /* Find the end of dst and adjust bytes left, but don't go past end */
-    while(n-- != 0 && *dst != '\0')
-        dst++;
-    dlen = dst - odst;
-    n = dsize - dlen;
+	/* Find the end of dst and adjust bytes left, but don't go past end */
+	while(n-- != 0 && *dst != '\0')
+		dst++;
+	dlen = dst - odst;
+	n = dsize - dlen;
 
-    if(n-- == 0)
-        return(dlen + strlen(src));
-    while(*src != '\0'){
-        if(n != 0){
-            *dst++ = *src;
-            n--;
-        }
-        src++;
-    }
-    *dst = '\0';
+	if(n-- == 0)
+		return(dlen + strlen(src));
+	while(*src != '\0'){
+		if(n != 0){
+			*dst++ = *src;
+			n--;
+		}
+		src++;
+	}
+	*dst = '\0';
 
-    /* Count does not include NUL */
-    return(dlen + (src - osrc));
+	/* Count does not include NUL */
+	return(dlen + (src - osrc));
 }
 
 
@@ -350,75 +350,74 @@ static int fixfilename(const char *oldpath, char *newpath, size_t len){
  *
  */
 static error_t parse_opt(int key, char *arg, struct argp_state *state){
-  /* Get the input argument from argp_parse, which we
-  know is a pointer to our arguments structure */
-  struct arguments *arguments = state->input;
+	/* Get the input argument from argp_parse, which we
+	 * know is a pointer to our arguments structure */
+	struct arguments *arguments = state->input;
 
-  switch(key){
-    case 'b':
-    	/* Do not modify original file */
-    	cmdargs.backup = 1;
-    	break;
+	switch(key){
+		case 'b':
+		/* Do not modify original file */
+		cmdargs.backup = 1;
+		break;
 
-    case 'd':
-    	/* Replace spaces with dashes */
-    	cmdargs.dashes = 1;
-    	break;
+		case 'd':
+		/* Replace spaces with dashes */
+		cmdargs.dashes = 1;
+		break;
 
-    case 'i':
-    	/* Interactive mode, prompt before action */
-    	cmdargs.interactive = 1;
-    	break;
+		case 'i':
+		/* Interactive mode, prompt before action */
+		cmdargs.interactive = 1;
+		break;
 
-    case 'n':
-    	/* Just print what we would do */
-    	cmdargs.dryrun = 1;
-    	break;
+		case 'n':
+		/* Just print what we would do */
+		cmdargs.dryrun = 1;
+		break;
 
-    case 's':
-    	cmdargs.strip = arg;
-    	break;
+		case 's':
+		cmdargs.strip = arg;
+		break;
 
-    case 'u':
-    	/* Replace spaces with underscores */
-    	cmdargs.underscore = 1;
-    	break;
+		case 'u':
+		/* Replace spaces with underscores */
+		cmdargs.underscore = 1;
+		break;
 
-    case 'v':
-    	/* Print extra information */
-    	cmdargs.verbose = 1;
-    	break;
+		case 'v':
+		/* Print extra information */
+		cmdargs.verbose = 1;
+		break;
 
-    case ARGP_KEY_NO_ARGS:
-    	/* We got no arguments, show help */
-    	argp_usage(state);
-    	/* Never get here */
-    	break;
+		case ARGP_KEY_NO_ARGS:
+		/* We got no arguments, show help */
+		argp_usage(state);
+		/* Never get here */
+		break;
 
-    case ARGP_KEY_ARG:
-      /* Here we know that state->arg_num == 0, since we
-      force argument parsing to end before any more arguments can
-      get here */
-      arguments->arg1 = arg;
+		case ARGP_KEY_ARG:
+		/* Here we know that state->arg_num == 0, since we
+		 * force argument parsing to end before any more arguments can
+		 * get here */
+		arguments->arg1 = arg;
 
-      /* Now we consume all the rest of the arguments.
-      state->next is the index in state->argv of the
-      next argument to be parsed, which is the first string
-      we're interested in, so we can just use
-      &state->argv[state->next] as the value for
-      arguments->strings
+		/* Now we consume all the rest of the arguments.
+		 * state->next is the index in state->argv of the
+		 * next argument to be parsed, which is the first string
+		 * we're interested in, so we can just use
+		 * &state->argv[state->next] as the value for
+		 * arguments->strings
+		 * in addition, by setting state->next to the end
+		 * of the arguments we can force argp to stop parsing here and
+		 * return */
+		arguments->strings = &state->argv[state->next];
+		state->next = state->argc;
+		break;
 
-      in addition, by setting state->next to the end
-      of the arguments we can force argp to stop parsing here and
-      return */
-      arguments->strings = &state->argv[state->next];
-      state->next = state->argc;
-      break;
-
-    default:
-      return(ARGP_ERR_UNKNOWN);
-  }
-  return(0);
+		default:
+			return(ARGP_ERR_UNKNOWN);
+	}
+	return(0);
 }
 
 /** Get the permissions of a file
@@ -446,68 +445,68 @@ static mode_t getfmode(const char *file){
  *
  */
 static int cpfile(const char *infile, const char *outfile){
-  int infd, outfd;
-  ssize_t n;
-  mode_t oldmask, fmode;
+	int infd, outfd;
+	ssize_t n;
+	mode_t oldmask, fmode;
 
-  /* Allocate our data buffer */
-  char *buf = malloc(IO_BUFSIZ * sizeof(char));
-  if(!buf){
-    perror("spacerm: malloc() error");
-    return(-1);
-  }
+	/* Allocate our data buffer */
+	char *buf = malloc(IO_BUFSIZ * sizeof(char));
+	if(!buf){
+		perror("spacerm: malloc() error");
+		return(-1);
+	}
 
-  /* Open the input and output files, creating the output file if needed */
-  if((infd = open(infile, O_RDONLY)) < 0){
-    perror("spacerm: open() error");
-    free(buf);
-    return(-1);
-  }
+	/* Open the input and output files, creating the output file if needed */
+	if((infd = open(infile, O_RDONLY)) < 0){
+		perror("spacerm: open() error");
+		free(buf);
+		return(-1);
+	}
 
-  /* Set the umask to 0 and get the permissions of infile */
-  oldmask = umask(0);
-  fmode = getfmode(infile);
+	/* Set the umask to 0 and get the permissions of infile */
+	oldmask = umask(0);
+	fmode = getfmode(infile);
 
-  /* Create the new file with the same permissions as infile */
-  if((outfd = open(outfile, O_CREAT | O_WRONLY, fmode)) < 0){
-    perror("spacerm: open() error");
-    free(buf);
-    close(infd);
-    return(-1);
-  }
+	/* Create the new file with the same permissions as infile */
+	if((outfd = open(outfile, O_CREAT | O_WRONLY, fmode)) < 0){
+		perror("spacerm: open() error");
+		free(buf);
+		close(infd);
+		return(-1);
+	}
 
-  /* restore the processes's umask */
-  umask(oldmask);
+	/* restore the processes's umask */
+	umask(oldmask);
 
-  /* Announce our intention to read the file sequentially */
-  posix_fadvise(infd, 0, 0, POSIX_FADV_SEQUENTIAL);
+	/* Announce our intention to read the file sequentially */
+	posix_fadvise(infd, 0, 0, POSIX_FADV_SEQUENTIAL);
 
-  /* Copy the file one buffer at a time */
-  while((n = read(infd, buf, IO_BUFSIZ)) > 0){
-    if(write(outfd, buf, (size_t)n) != n){
-      perror("spacerm: write() error");
-      goto fail;
-    }
-  }
-  /* If read() hit an error, print the error and return -1 */
-  if(n < 0){
-    perror("spacerm: read() error");
-    goto fail;
-  }
+	/* Copy the file one buffer at a time */
+	while((n = read(infd, buf, IO_BUFSIZ)) > 0){
+		if(write(outfd, buf, (size_t)n) != n){
+			perror("spacerm: write() error");
+			goto fail;
+		}
+	}
+	/* If read() hit an error, print the error and return -1 */
+	if(n < 0){
+		perror("spacerm: read() error");
+		goto fail;
+	}
 
-  /* Clean up our resources */
-  close(infd);
-  close(outfd);
-  free(buf);
+	/* Clean up our resources */
+	close(infd);
+	close(outfd);
+	free(buf);
 
-  return(0);
+	return(0);
 
-/* We jump here if something went wrong */
+	/* We jump here if something went wrong */
 fail:
-  close(infd);
-  close(outfd);
-  free(buf);
-  return(-1);
+	close(infd);
+	close(outfd);
+	free(buf);
+	return(-1);
 }
 
 
@@ -516,22 +515,22 @@ fail:
  *
  */
 static int yesno(void){
-  char *response = NULL;    /* Tell getline to malloc space for the response */
-  size_t response_size = 0;
-  ssize_t response_len = getline(&response, &response_size, stdin);
-  int yes;
+	char *response = NULL;    /* Tell getline to malloc space for the response */
+	size_t response_size = 0;
+	ssize_t response_len = getline(&response, &response_size, stdin);
+	int yes;
 
-  if(response_len <= 0)
-    yes = 0;
-  else {
-    /* Only return True if user entered affirmative,
-     * and rpmatch was successful */
-    response[response_len - 1] = '\0';
-    yes = (0 < rpmatch(response));
-  }
+	if(response_len <= 0)
+		yes = 0;
+	else {
+	/* Only return True if user entered affirmative,
+	 * and rpmatch was successful */
+	response[response_len - 1] = '\0';
+	yes = (0 < rpmatch(response));
+	}
 
-  free(response);
-  return(yes);
+	free(response);
+	return(yes);
 }
 
 
@@ -590,68 +589,68 @@ static int checkperm(const char *path){
  * @returns 0 on success, -1 on failure.
  */
 static int spacerm(char *file){
-  char newpath[MAXLEN] = {0};
-  int resp, ret = 0;
+	char newpath[MAXLEN] = {0};
+	int resp, ret = 0;
 
-  /* Check permissions on the file and directory. */
-  if((ret = checkperm(file)) < 0){
-	  exit(EXIT_FAILURE);
-  }
+	/* Check permissions on the file and directory. */
+	if((ret = checkperm(file)) < 0){
+		exit(EXIT_FAILURE);
+	}
 
 
-  /* Generate a corrected file name and act according to the given
-   * command line options */
-  if(fixfilename(file, newpath, MAXLEN) < 0)
-	  return(-1);
+	/* Generate a corrected file name and act according to the given
+	 * command line options */
+	if(fixfilename(file, newpath, MAXLEN) < 0)
+		return(-1);
 
-  if(cmdargs.backup){
-	  if(cmdargs.interactive){
-		  printf("spacerm: copy '%s' to '%s'? (Yes/No): ", file, newpath);
-		  /* If user said no, abort operation */
-		  if((resp = yesno()) == 0)
-			  return(-1);
-	  }
+	if(cmdargs.backup){
+		if(cmdargs.interactive){
+			printf("spacerm: copy '%s' to '%s'? (Yes/No): ", file, newpath);
+			/* If user said no, abort operation */
+			if((resp = yesno()) == 0)
+				return(-1);
+		}
 
-	  if(cmdargs.dryrun){
-		  /* Print out what actions we would take and return */
-		  printf("copy file: '%s' -> '%s'\n", file, newpath);
-		  return(0);
-	  }
+		if(cmdargs.dryrun){
+			/* Print out what actions we would take and return */
+			printf("copy file: '%s' -> '%s'\n", file, newpath);
+			return(0);
+		}
 
-	  /* Do the actual copy */
-	  if((ret = cpfile(file, newpath)) < 0){
-		  exit(EXIT_FAILURE);
-	  }
+		/* Do the actual copy */
+		if((ret = cpfile(file, newpath)) < 0){
+			exit(EXIT_FAILURE);
+		}
 
-	  /* Print some useful information if verbose mode is enabled */
-	  if(cmdargs.verbose){
-		  printf("copied file: '%s' -> '%s'\n", file, newpath);
-	  }
-  } else {
-	  if(cmdargs.interactive){
-		  printf("spacerm: rename '%s' to '%s'? (Yes/No): ", file, newpath);
-		  /* If user said no, abort operation */
-		  if((resp = yesno()) == 0)
-			  return(-1);
-	  }
+		/* Print some useful information if verbose mode is enabled */
+		if(cmdargs.verbose){
+			printf("copied file: '%s' -> '%s'\n", file, newpath);
+		}
+	} else {
+		if(cmdargs.interactive){
+			printf("spacerm: rename '%s' to '%s'? (Yes/No): ", file, newpath);
+			/* If user said no, abort operation */
+			if((resp = yesno()) == 0)
+				return(-1);
+		}
 
-	  if(cmdargs.dryrun){
-		  printf("rename file: '%s' -> '%s'\n", file, newpath);
-		  return(0);
-	  }
+		if(cmdargs.dryrun){
+			printf("rename file: '%s' -> '%s'\n", file, newpath);
+			return(0);
+		}
 
-	  /* Attempt to rename the file */
-	  if((ret = rename(file, newpath)) < 0){
-		  perror("spacerm: rename() error");
-		  exit(EXIT_FAILURE);
-	  }
+		/* Attempt to rename the file */
+		if((ret = rename(file, newpath)) < 0){
+			perror("spacerm: rename() error");
+			exit(EXIT_FAILURE);
+		}
 
-	  if(cmdargs.verbose){
-		  printf("renamed file: '%s' -> '%s'\n", file, newpath);
-	  }
-  }
+		if(cmdargs.verbose){
+			printf("renamed file: '%s' -> '%s'\n", file, newpath);
+		}
+	}
 
-  return(ret);
+	return(ret);
 }
 
 
