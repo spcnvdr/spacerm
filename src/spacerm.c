@@ -70,7 +70,7 @@
 /* Size of buffer to use for I/O operations */
 #define IO_BUFSIZ    (128*1024)
 
-const char *argp_program_version = "spacerm 1.3.1";
+const char *argp_program_version = "spacerm 1.3.2";
 const char *argp_program_bug_address = "<spcnvdrr@protonmail.com>";
 
 /* Program documentation */
