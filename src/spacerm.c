@@ -534,16 +534,14 @@ static int yesno(void){
 }
 
 
-/** Check the permissions on the file and the directory it resides in. Also
- * ensure that we only operate on regular files.
+/** Ensure that we only operate on regular files.
  * @param path the path of the file
  * @returns 0 on success, -1 if an error occurred
- * or insufficient permissions
+ * or path is not a normal file
  *
  */
-static int checkperm(const char *path){
-	char *dir, *backup;
-	int ret;
+static int checktype(const char *path){
+	int ret = 0;
 	struct stat st;
 
 	if(stat(path, &st) < 0){
@@ -557,28 +555,6 @@ static int checkperm(const char *path){
 		return(-1);
 	}
 
-	/* Make sure file exists and we have adequate permissions,
-	 * otherwise */
-	if((ret = access(path, R_OK)) < 0){
-		perror("spacerm: access() error");
-		return(ret);
-	}
-
-	if((backup = strndup(path, MAXLEN)) == NULL){
-		perror("spacerm: strndup() error");
-		exit(EXIT_FAILURE);
-	}
-
-	dir = dirname(backup);
-
-	/* Test for write access to the directory that the file resides in. */
-	if((ret = access(dir, R_OK|W_OK)) < 0){
-		perror("spacerm: access() error");
-		free(backup);
-		return(ret);
-	}
-
-	free(backup);
 	return(ret);
 
 }
@@ -592,8 +568,8 @@ static int spacerm(char *file){
 	char newpath[MAXLEN] = {0};
 	int resp, ret = 0;
 
-	/* Check permissions on the file and directory. */
-	if((ret = checkperm(file)) < 0){
+	/* Check type of file */
+	if((ret = checktype(file)) < 0){
 		exit(EXIT_FAILURE);
 	}
 
